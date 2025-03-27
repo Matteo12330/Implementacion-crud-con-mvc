@@ -1,0 +1,29 @@
+﻿@model Implementacion_crud_con_mvc.Models.Libro
+
+@{
+    ViewData["Title"] = "Agregar Libro";
+}
+
+<h2>Agregar Nuevo Libro</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="Titulo" class="control-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Autor" class="control-label"></label>
+        <input asp-for="Autor" class="form-control" />
+        <span asp-validation-for="Autor" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FechaPublicacion" class="control-label"></label>
+        <input asp-for="FechaPublicacion" class="form-control" type="date" />
+        <span asp-validation-for="FechaPublicacion" class="text-danger"></span>
+    </div>
+    <div class="form-group mt-2">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

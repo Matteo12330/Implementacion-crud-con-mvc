@@ -1,0 +1,19 @@
+﻿@model Implementacion_crud_con_mvc.Models.Libro
+
+@{
+    ViewData["Title"] = "Eliminar Libro";
+}
+
+<h2>¿Estás seguro de que deseas eliminar este libro?</h2>
+
+<div>
+    <p><strong>Título:</strong> @Model.Titulo</p>
+    <p><strong>Autor:</strong> @Model.Autor</p>
+    <p><strong>Fecha de Publicación:</strong> @Model.FechaPublicacion.ToString("dd/MM/yyyy")</p>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
