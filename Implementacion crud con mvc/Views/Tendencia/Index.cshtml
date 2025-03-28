@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Implementacion_crud_con_mvc.Models.Libro>
+﻿@model IEnumerable<Implementacion_crud_con_mvc.Models.Tendencia>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Titulo)
+                @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Autor)
+                @Html.DisplayNameFor(model => model.Descripcion)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaPublicacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tendencia)
+                @Html.DisplayNameFor(model => model.FechaCreacion)
             </th>
             <th></th>
         </tr>
@@ -31,16 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Titulo)
+                @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Autor)
+                @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaPublicacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tendencia.Nombre)
+                @Html.DisplayFor(modelItem => item.FechaCreacion)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

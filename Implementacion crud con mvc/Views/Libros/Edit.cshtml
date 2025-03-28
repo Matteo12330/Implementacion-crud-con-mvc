@@ -1,30 +1,49 @@
 ﻿@model Implementacion_crud_con_mvc.Models.Libro
 
 @{
-    ViewData["Title"] = "Editar Libro";
+    ViewData["Title"] = "Edit";
 }
 
-<h2>Editar Libro</h2>
+<h1>Edit</h1>
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label asp-for="Titulo" class="control-label"></label>
-        <input asp-for="Titulo" class="form-control" />
-        <span asp-validation-for="Titulo" class="text-danger"></span>
+<h4>Libro</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Autor" class="control-label"></label>
+                <input asp-for="Autor" class="form-control" />
+                <span asp-validation-for="Autor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaPublicacion" class="control-label"></label>
+                <input asp-for="FechaPublicacion" class="form-control" />
+                <span asp-validation-for="FechaPublicacion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TendenciaId" class="control-label"></label>
+                <select asp-for="TendenciaId" class="form-control" asp-items="ViewBag.TendenciaId"></select>
+                <span asp-validation-for="TendenciaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Autor" class="control-label"></label>
-        <input asp-for="Autor" class="form-control" />
-        <span asp-validation-for="Autor" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FechaPublicacion" class="control-label"></label>
-        <input asp-for="FechaPublicacion" class="form-control" type="date" />
-        <span asp-validation-for="FechaPublicacion" class="text-danger"></span>
-    </div>
-    <div class="form-group mt-2">
-        <button type="submit" class="btn btn-success">Guardar Cambios</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
