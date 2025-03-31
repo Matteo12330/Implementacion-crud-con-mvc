@@ -20,8 +20,8 @@ namespace Implementacion_crud_con_mvc.Models
         public DateTime FechaPublicacion { get; set; }
 
         [ForeignKey("Tendencia")]
-        public int TendenciaId { get; set; } // Llave foránea hacia Tendencia
+        public int TendenciaId { get; set; } 
 
-        public Tendencia? Tendencia { get; set; } // Relación con la tabla Tendencias
+        public Tendencia? Tendencia { get; set; } 
     }
 }

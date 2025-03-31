@@ -2,15 +2,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Implementacion_crud_con_mvc.Data; // Importa tu DbContext
+using Implementacion_crud_con_mvc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ?? Agregar la conexión a la base de datos
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ?? Agregar servicios MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
