@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Implementacion_crud_con_mvc.Models; // Ajusta según tu namespace
+﻿using Implementacion_crud_con_mvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Implementacion_crud_con_mvc.Data
 {
@@ -10,7 +10,8 @@ namespace Implementacion_crud_con_mvc.Data
         {
         }
 
-        public DbSet<Tendencia> Tendencias { get; set; } // Agrega todas tus entidades
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Libro> Libros { get; set; }
+        public DbSet<Tendencia> Tendencias { get; set; }
     }
 }
