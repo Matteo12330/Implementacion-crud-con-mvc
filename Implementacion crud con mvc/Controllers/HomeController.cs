@@ -1,9 +1,12 @@
-using Implementacion_crud_con_mvc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Implementacion_crud_con_mvc.Helpers;
+using Implementacion_crud_con_mvc.Models;
 using System.Diagnostics;
 
 namespace Implementacion_crud_con_mvc.Controllers
 {
+    [LoginAuthorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

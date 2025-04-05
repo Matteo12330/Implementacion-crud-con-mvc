@@ -2,6 +2,7 @@
 using Implementacion_crud_con_mvc.Data;
 using Implementacion_crud_con_mvc.Models;
 using Implementacion_crud_con_mvc.Helpers;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 
 namespace Implementacion_crud_con_mvc.Controllers
@@ -15,6 +16,7 @@ namespace Implementacion_crud_con_mvc.Controllers
             _context = context;
         }
 
+        // REGISTRO
         public IActionResult Register()
         {
             return View();
@@ -25,38 +27,60 @@ namespace Implementacion_crud_con_mvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_context.Usuarios.Any(u => u.Correo == usuario.Correo))
+                {
+                    ModelState.AddModelError("Correo", "Este correo ya está en uso.");
+                    return View(usuario);
+                }
+
                 usuario.Contrasena = SeguridadHelper.CifrarMD5(usuario.Contrasena);
                 _context.Usuarios.Add(usuario);
                 _context.SaveChanges();
+
+                TempData["RegistroExitoso"] = "¡Registro exitoso! Ahora puedes iniciar sesión.";
                 return RedirectToAction("Login");
             }
+
             return View(usuario);
         }
 
+        // LOGIN
         public IActionResult Login()
         {
+            ViewBag.Mensaje = TempData["RegistroExitoso"];
             return View();
         }
 
         [HttpPost]
-        public IActionResult Login(string nombre, string contrasena)
+        public IActionResult Login(LoginViewModel model)
         {
-            string passwordCifrada = SeguridadHelper.CifrarMD5(contrasena);
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.Nombre == nombre && u.Contrasena == passwordCifrada);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string passwordCifrada = SeguridadHelper.CifrarMD5(model.Contrasena);
+
+            var usuario = _context.Usuarios.FirstOrDefault(u =>
+                u.Correo == model.Correo && u.Contrasena == passwordCifrada);
 
             if (usuario != null)
             {
+                HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+                HttpContext.Session.SetString("UsuarioNombre", usuario.Nombre);
+                HttpContext.Session.SetString("UsuarioCorreo", usuario.Correo);
+
                 return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                ViewBag.Error = "Credenciales incorrectas";
-                return View();
-            }
+
+            ModelState.AddModelError("", "Correo o contraseña incorrectos.");
+            return View(model);
         }
 
+        // LOGOUT
         public IActionResult Logout()
         {
+            HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
     }

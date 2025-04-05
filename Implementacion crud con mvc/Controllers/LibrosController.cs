@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Implementacion_crud_con_mvc.Data;
 using Implementacion_crud_con_mvc.Models;
+using Implementacion_crud_con_mvc.Helpers;
 
 namespace Implementacion_crud_con_mvc.Controllers
 {
+    [LoginAuthorize]
     public class LibrosController : Controller
     {
         private readonly ApplicationDbContext _context;

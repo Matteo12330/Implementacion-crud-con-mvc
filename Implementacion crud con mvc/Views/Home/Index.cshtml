@@ -1,8 +1,42 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
+    var nombre = Context.Session.GetString("UsuarioNombre") ?? "Usuario";
+    var correo = Context.Session.GetString("UsuarioCorreo") ?? "";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="text-center">
+        <h2 class="mb-3">¡Hola, @nombre! 👋</h2>
+        <p class="lead">Bienvenido a tu panel de usuario. ¿Qué deseas hacer hoy?</p>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">📚 Ver Libros</h5>
+                    <p class="card-text">Explora los libros disponibles.</p>
+                    <a href="@Url.Action("Index", "Libros")" class="btn btn-primary">Ir a Libros</a>
+                </div>
+            </div>
+        </div>
+
+        @if (correo == "admin@biblioteca.com") { // usar rol si lo agrego después
+            <div class="col-md-4 mb-4">
+                <div class="card shadow text-center h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">🔥 Tendencias</h5>
+                        <p class="card-text">Gestiona las novedades y libros destacados.</p>
+                        <a href="@Url.Action("Index", "Tendencias")" class="btn btn-warning">Ir a Tendencias</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
+
+<style>
+    body {
+        background: linear-gradient(to right, #f8f9fa, #e0eafc);
+    }
+</style>
