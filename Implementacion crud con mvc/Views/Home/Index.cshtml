@@ -4,30 +4,34 @@
     var correo = Context.Session.GetString("UsuarioCorreo") ?? "";
 }
 
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
+
 <div class="container mt-5">
     <div class="text-center">
-        <h2 class="mb-3">¡Hola, @nombre! 👋</h2>
-        <p class="lead">Bienvenido a tu panel de usuario. ¿Qué deseas hacer hoy?</p>
+        <img src="~/img/bitespot-logo.png" alt="Logo" style="max-height: 80px;">
+        <h2 class="mb-3" style="font-family: 'Lobster', cursive; color: #801B1B;">¡Hola, @nombre! 👋</h2>
+        <p class="lead">Bienvenido a tu panel BiteSpot. ¿Qué deseas hacer hoy?</p>
     </div>
 
     <div class="row justify-content-center mt-4">
         <div class="col-md-4 mb-4">
             <div class="card shadow text-center h-100">
                 <div class="card-body">
-                    <h5 class="card-title">📚 Ver Libros</h5>
-                    <p class="card-text">Explora los libros disponibles.</p>
-                    <a href="@Url.Action("Index", "Libros")" class="btn btn-primary">Ir a Libros</a>
+                    <h5 class="card-title">🍔 Menú de Productos</h5>
+                    <p class="card-text">Gestiona los productos de BiteSpot.</p>
+                    <a href="@Url.Action("Index", "Producto")" class="btn btn-bitespot">Ir a Producto</a>
                 </div>
             </div>
         </div>
 
-        @if (correo == "admin@biblioteca.com") { // usar rol si lo agrego después
+        @if (correo == "admin@bitespot.com")
+        {
             <div class="col-md-4 mb-4">
                 <div class="card shadow text-center h-100">
                     <div class="card-body">
                         <h5 class="card-title">🔥 Tendencias</h5>
-                        <p class="card-text">Gestiona las novedades y libros destacados.</p>
-                        <a href="@Url.Action("Index", "Tendencias")" class="btn btn-warning">Ir a Tendencias</a>
+                        <p class="card-text">Administra productos destacados y novedades.</p>
+                        <a href="@Url.Action("Index", "Tendencia")" class="btn btn-warning">Ir a Tendencias</a>
                     </div>
                 </div>
             </div>
@@ -37,6 +41,28 @@
 
 <style>
     body {
-        background: linear-gradient(to right, #f8f9fa, #e0eafc);
+        background: #FFF6E6;
+        font-family: 'Lobster', cursive;
     }
+
+    .btn-bitespot {
+        background-color: #801B1B;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 12px;
+        border: none;
+    }
+
+        .btn-bitespot:hover {
+            background-color: #A72828;
+        }
+
+    .card {
+        border-radius: 20px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
 </style>

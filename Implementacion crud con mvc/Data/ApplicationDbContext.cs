@@ -11,7 +11,7 @@ namespace Implementacion_crud_con_mvc.Data
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Libro> Libros { get; set; }
+        public DbSet<Producto> Productos { get; set; }
         public DbSet<Tendencia> Tendencias { get; set; }
     }
 }

@@ -12,7 +12,9 @@ namespace Implementacion_crud_con_mvc.Helpers
 
             if (usuarioId == null)
             {
+                // Redirige correctamente a Account/Login
                 context.Result = new RedirectToActionResult("Login", "Account", null);
+                return;
             }
 
             base.OnActionExecuting(context);

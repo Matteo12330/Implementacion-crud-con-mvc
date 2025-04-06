@@ -1,0 +1,44 @@
+﻿@model Implementacion_crud_con_mvc.Models.Producto
+
+@{
+    ViewData["Title"] = "Editar Producto";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Producto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nombre)
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nombre)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Precio)
+                @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Precio)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FechaLanzamiento)
+                @Html.EditorFor(model => model.FechaLanzamiento, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaLanzamiento)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Descripcion)
+                @Html.TextAreaFor(model => model.Descripcion, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Descripcion)
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>

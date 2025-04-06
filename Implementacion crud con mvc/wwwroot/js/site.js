@@ -1,4 +1,7 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿// Función para mostrar/ocultar contraseña
+function togglePassword(id, button) {
+    const input = document.getElementById(id);
+    const isVisible = input.type === "text";
+    input.type = isVisible ? "password" : "text";
+    button.innerText = isVisible ? "❌" : "👁️";
+}

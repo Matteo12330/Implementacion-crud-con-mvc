@@ -17,6 +17,8 @@ namespace Implementacion_crud_con_mvc.Models
 
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         [DataType(DataType.Password)]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "La contraseña debe tener al menos una mayúscula y un número.")]
         public string Contrasena { get; set; }
 
         public Usuario()

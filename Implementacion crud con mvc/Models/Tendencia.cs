@@ -16,6 +16,7 @@ namespace Implementacion_crud_con_mvc.Models
         public string Descripcion { get; set; } = string.Empty;
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
-        public ICollection<Libro> Libros { get; set; } = new List<Libro>();
+        // 🔥 Relación inversa: una tendencia puede tener muchos productos
+        public ICollection<Producto> Productos { get; set; } = new List<Producto>();
     }
 }

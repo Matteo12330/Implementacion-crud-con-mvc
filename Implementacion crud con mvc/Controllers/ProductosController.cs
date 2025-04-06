@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,37 +10,34 @@ using Implementacion_crud_con_mvc.Helpers;
 namespace Implementacion_crud_con_mvc.Controllers
 {
     [LoginAuthorize]
-    public class LibrosController : Controller
+    public class ProductoController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public LibrosController(ApplicationDbContext context)
+        public ProductoController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Libros.Include(l => l.Tendencia);
-            return View(await applicationDbContext.ToListAsync());
+            var productos = await _context.Productos.Include(p => p.Tendencia).ToListAsync();
+            return View(productos);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var libro = await _context.Libros
-                .Include(l => l.Tendencia)
+            var producto = await _context.Productos
+                .Include(p => p.Tendencia)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (libro == null)
-            {
-                return NotFound();
-            }
 
-            return View(libro);
+            if (producto == null)
+                return NotFound();
+
+            return View(producto);
         }
 
         public IActionResult Create()
@@ -53,102 +48,85 @@ namespace Implementacion_crud_con_mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,Autor,FechaPublicacion,TendenciaId")] Libro libro)
+        public async Task<IActionResult> Create(Producto producto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(libro);
+                _context.Add(producto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", libro.TendenciaId);
-            return View(libro);
+
+            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", producto.TendenciaId);
+            return View(producto);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var libro = await _context.Libros.FindAsync(id);
-            if (libro == null)
-            {
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null)
                 return NotFound();
-            }
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", libro.TendenciaId);
-            return View(libro);
+
+            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", producto.TendenciaId);
+            return View(producto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Autor,FechaPublicacion,TendenciaId")] Libro libro)
+        public async Task<IActionResult> Edit(int id, Producto producto)
         {
-            if (id != libro.Id)
-            {
+            if (id != producto.Id)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(libro);
+                    _context.Update(producto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LibroExists(libro.Id))
-                    {
+                    if (!_context.Productos.Any(e => e.Id == producto.Id))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", libro.TendenciaId);
-            return View(libro);
+
+            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", producto.TendenciaId);
+            return View(producto);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var libro = await _context.Libros
-                .Include(l => l.Tendencia)
+            var producto = await _context.Productos
+                .Include(p => p.Tendencia)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (libro == null)
-            {
-                return NotFound();
-            }
 
-            return View(libro);
+            if (producto == null)
+                return NotFound();
+
+            return View(producto);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var libro = await _context.Libros.FindAsync(id);
-            if (libro != null)
-            {
-                _context.Libros.Remove(libro);
-            }
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto != null)
+                _context.Productos.Remove(producto);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool LibroExists(int id)
-        {
-            return _context.Libros.Any(e => e.Id == id);
         }
     }
 }
