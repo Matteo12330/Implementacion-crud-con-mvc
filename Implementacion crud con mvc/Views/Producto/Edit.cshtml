@@ -37,6 +37,13 @@
                 @Html.ValidationMessageFor(model => model.Descripcion)
             </div>
 
+            <!-- ✅ Campo Tendencia (DropDown) -->
+            <div class="form-group">
+                @Html.LabelFor(model => model.TendenciaId, "Tendencia")
+                @Html.DropDownListFor(model => model.TendenciaId, (SelectList)ViewBag.TendenciaId, "-- Selecciona una tendencia --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TendenciaId, "", new { @class = "text-danger" })
+            </div>
+
             <button type="submit" class="btn btn-primary">Guardar</button>
             <a asp-action="Index" class="btn btn-secondary">Volver</a>
         </form>
