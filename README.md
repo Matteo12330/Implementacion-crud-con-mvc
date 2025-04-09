@@ -1,33 +1,52 @@
 # Implementación de CRUD con ASP.NET MVC
 
-Este proyecto es una aplicación web que implementa las operaciones CRUD (Crear, Leer, Actualizar y Eliminar) utilizando ASP.NET MVC, Entity Framework y SQL Server. El sistema está diseñado para la gestión de libros en una librería, permitiendo registrar, modificar y eliminar información de cada libro disponible. Además, integra la funcionalidad de tendencias, lo que permitirá en el futuro personalizar el flujo de recomendaciones basado en las preferencias y popularidad de los libros. Esta estructura sentará las bases para una aplicación más avanzada con un sistema de flujo personalizado al finalizar el semestre.
+Este proyecto es una aplicación web que implementa operaciones CRUD (Crear, Leer, Actualizar y Eliminar) utilizando **ASP.NET MVC**, **Entity Framework** y **SQL Server**. Fue desarrollado como parte de una práctica académica con el objetivo de aplicar los conceptos del patrón Modelo-Vista-Controlador (MVC), la interacción con bases de datos relacionales y la validación de formularios.
+
+---
+
+## 🆕 Actualización - Login Seguro y Transición a BiteSpot
+
+En esta segunda fase del proyecto se incorporaron nuevas funcionalidades esenciales:
+
+- **Sistema de autenticación de usuarios (Login/Register)** con encriptación MD5 y gestión de sesión.
+- **Protección de rutas** mediante un atributo personalizado `[LoginAuthorize]`.
+- **Rediseño visual de la interfaz** inspirado en mi marca **BiteSpot**, simulando una aplicación real para un negocio gastronómico (estilo restaurante/kiosko).
+
+> Aunque el dominio original era la gestión de libros y tendencias, se migró visualmente a productos alimenticios (hamburguesas, bebidas, etc.) como parte de un rediseño completo orientado a simular un proyecto real para mi negocio.
+
+---
+
+## ✅ Funcionalidades
+
+- CRUD completo para Tendencias y Productos
+- Registro e inicio de sesión de usuarios
+- Validación de contraseñas seguras (mínimo 8 caracteres, mayúsculas y números)
+- Encriptación de contraseñas con MD5
+- Almacenamiento de sesión y navegación protegida
+- Visual renovado y responsivo con Bootstrap 5
+
+---
 
 ## Tecnologías Utilizadas
-- ASP.NET MVC (C#)
-- SQL Server con Entity Framework
 
-## Funcionalidades
-- Gestión de **Tendencias** y **Libros**
-- CRUD completo: Crear, Leer, Actualizar y Eliminar
-- Validaciones en formularios
-- Diseño basado en MVC
+- ASP.NET MVC (C#)
+- Entity Framework Core
+- SQL Server (LocalDB)
+- Bootstrap 5
+- Validaciones con Data Annotations
+- Sesiones con `HttpContext.Session`
+- Encriptación de contraseñas (MD5)
+
+---
 
 ## Estructura del Proyecto
-- **Models/** → Contiene las clases 'Libro' y 'Tendencia' que representan las tablas en la base de datos.
-- **Controllers/** → 'LibroController' y 'TendenciaController' manejan la lógica de negocio y la comunicación con la base de datos.
-- **Views/** → Contiene las vistas para mostrar los datos y los formularios.
-- **Data/** – Contiene ApplicationDbContext.cs, que define la conexión con la base de datos y configura las tablas.
 
-## Instalación y Configuración
-1. Clona este repositorio
-2. Abre el proyecto en Visual Studio.
-3. Asegúrate de tener SQL Server en ejecución.
-4. Ejecuta las migraciones en la consola de NuGet:
-5. Corre la aplicación desde Visual Studio.
+- **Models/** → `Usuario.cs`, `Producto.cs`, `Tendencia.cs`
+- **Controllers/** → `AccountController`, `ProductosController`, `TendenciaController`
+- **Views/** → CRUD para Producto y Tendencia, login personalizado
+- **Helpers/** → `SeguridadHelper.cs`, `LoginAuthorizeAttribute.cs`
+- **Data/** → `ApplicationDbContext.cs` con conexión a base de datos
 
-## Commits Clave
-1. Inicialización del Proyecto - Creación de estructura MVC.  
-2. Implementación del CRUD - Controladores, modelos y vistas funcionales.  
-3. Optimización del Código - Eliminación de lineas, comentarios inecesario, debug y mejoras de legibilidad.  
 
-Puedes ver una demostración del proyecto en el siguiente video: https://youtu.be/OI409buKkPw?si=9Z5LGMbDoOUtvIJs
+
+
