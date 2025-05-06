@@ -8,8 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSession();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Configura la base de datos dependiendo del entorno
+if (builder.Environment.IsDevelopment())
+{
+    // Desarrollo local: SQL Server
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings_Local")["DefaultConnection"]));
+}
+else
+{
+    // Producción (Render): SQLite
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 builder.Services.AddControllersWithViews();
 
