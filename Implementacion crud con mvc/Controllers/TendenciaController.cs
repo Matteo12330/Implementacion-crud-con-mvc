@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,67 +21,71 @@ namespace Implementacion_crud_con_mvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tendencias.ToListAsync());
+            var tendencias = await _context.Tendencias
+                .Include(t => t.Categoria)
+                .ToListAsync();
+            return View(tendencias);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var tendencia = await _context.Tendencias
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tendencia == null)
-            {
-                return NotFound();
-            }
+                .Include(t => t.Categoria)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tendencia == null) return NotFound();
 
             return View(tendencia);
         }
 
         public IActionResult Create()
         {
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,FechaCreacion")] Tendencia tendencia)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,FechaCreacion,CategoriaId")] Tendencia tendencia)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(tendencia);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // Log de errores para debugging
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Campo: {state.Key} - Error: {error.ErrorMessage}");
+                    }
+                }
+
+                ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", tendencia.CategoriaId);
+                return View(tendencia);
             }
-            return View(tendencia);
+
+            _context.Tendencias.Add(tendencia);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var tendencia = await _context.Tendencias.FindAsync(id);
-            if (tendencia == null)
-            {
-                return NotFound();
-            }
+            if (tendencia == null) return NotFound();
+
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", tendencia.CategoriaId);
             return View(tendencia);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,FechaCreacion")] Tendencia tendencia)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,FechaCreacion,CategoriaId")] Tendencia tendencia)
         {
-            if (id != tendencia.Id)
-            {
-                return NotFound();
-            }
+            if (id != tendencia.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -91,36 +93,28 @@ namespace Implementacion_crud_con_mvc.Controllers
                 {
                     _context.Update(tendencia);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TendenciaExists(tendencia.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!_context.Tendencias.Any(e => e.Id == tendencia.Id)) return NotFound();
+                    else throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", tendencia.CategoriaId);
             return View(tendencia);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var tendencia = await _context.Tendencias
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tendencia == null)
-            {
-                return NotFound();
-            }
+                .Include(t => t.Categoria)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tendencia == null) return NotFound();
 
             return View(tendencia);
         }
@@ -131,9 +125,7 @@ namespace Implementacion_crud_con_mvc.Controllers
         {
             var tendencia = await _context.Tendencias.FindAsync(id);
             if (tendencia != null)
-            {
                 _context.Tendencias.Remove(tendencia);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -142,6 +134,17 @@ namespace Implementacion_crud_con_mvc.Controllers
         private bool TendenciaExists(int id)
         {
             return _context.Tendencias.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public JsonResult GetPorCategoria(int id)
+        {
+            var tendencias = _context.Tendencias
+                .Where(t => t.CategoriaId == id)
+                .Select(t => new { t.Id, t.Nombre })
+                .ToList();
+
+            return Json(tendencias);
         }
     }
 }

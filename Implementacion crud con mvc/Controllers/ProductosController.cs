@@ -21,28 +21,31 @@ namespace Implementacion_crud_con_mvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var productos = await _context.Productos.Include(p => p.Tendencia).ToListAsync();
+            var productos = await _context.Productos
+                .Include(p => p.Tendencia)
+                .ThenInclude(t => t.Categoria)
+                .ToListAsync();
             return View(productos);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var producto = await _context.Productos
                 .Include(p => p.Tendencia)
+                .ThenInclude(t => t.Categoria)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (producto == null)
-                return NotFound();
+            if (producto == null) return NotFound();
 
             return View(producto);
         }
 
         public IActionResult Create()
         {
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre");
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre");
+            ViewBag.Tendencias = new SelectList(_context.Tendencias, "Id", "Nombre");
             return View();
         }
 
@@ -57,20 +60,32 @@ namespace Implementacion_crud_con_mvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", producto.TendenciaId);
+            int categoriaId = _context.Tendencias
+                .Where(t => t.Id == producto.TendenciaId)
+                .Select(t => t.CategoriaId)
+                .FirstOrDefault();
+
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", categoriaId);
+            ViewBag.Tendencias = new SelectList(_context.Tendencias.Where(t => t.CategoriaId == categoriaId), "Id", "Nombre", producto.TendenciaId);
+
             return View(producto);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var producto = await _context.Productos.FindAsync(id);
-            if (producto == null)
-                return NotFound();
+            if (producto == null) return NotFound();
 
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", producto.TendenciaId);
+            int categoriaId = _context.Tendencias
+                .Where(t => t.Id == producto.TendenciaId)
+                .Select(t => t.CategoriaId)
+                .FirstOrDefault();
+
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", categoriaId);
+            ViewBag.Tendencias = new SelectList(_context.Tendencias.Where(t => t.CategoriaId == categoriaId), "Id", "Nombre", producto.TendenciaId);
+
             return View(producto);
         }
 
@@ -78,8 +93,7 @@ namespace Implementacion_crud_con_mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Producto producto)
         {
-            if (id != producto.Id)
-                return NotFound();
+            if (id != producto.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
@@ -87,6 +101,7 @@ namespace Implementacion_crud_con_mvc.Controllers
                 {
                     _context.Update(producto);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -95,24 +110,28 @@ namespace Implementacion_crud_con_mvc.Controllers
                     else
                         throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TendenciaId"] = new SelectList(_context.Tendencias, "Id", "Nombre", producto.TendenciaId);
+            int categoriaId = _context.Tendencias
+                .Where(t => t.Id == producto.TendenciaId)
+                .Select(t => t.CategoriaId)
+                .FirstOrDefault();
+
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", categoriaId);
+            ViewBag.Tendencias = new SelectList(_context.Tendencias.Where(t => t.CategoriaId == categoriaId), "Id", "Nombre", producto.TendenciaId);
+
             return View(producto);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
             var producto = await _context.Productos
                 .Include(p => p.Tendencia)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (producto == null)
-                return NotFound();
+            if (producto == null) return NotFound();
 
             return View(producto);
         }

@@ -23,11 +23,18 @@ namespace Implementacion_crud_con_mvc.Models
         [StringLength(500)]
         public string? Descripcion { get; set; }
 
-        // 🔥 Relación con Tendencia
+        [Required(ErrorMessage = "Debes seleccionar una tendencia")]
         [Display(Name = "Tendencia")]
         public int TendenciaId { get; set; }
 
         [ForeignKey("TendenciaId")]
         public Tendencia? Tendencia { get; set; }
+
+        [Required(ErrorMessage = "Debes seleccionar una categoría")]
+        [Display(Name = "Categoría")]
+        public int CategoriaId { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public Categoria? Categoria { get; set; }
     }
 }
