@@ -1,0 +1,39 @@
+﻿@model IEnumerable<BiteSpot.Models.Producto>
+
+@{
+    ViewData["Title"] = "Menú de BiteSpot";
+}
+
+<h2 class="mb-4 text-center" style="font-family: 'Lobster', cursive; color: #801B1B;">🍔 Menú de BiteSpot</h2>
+
+<p class="text-end">
+    <a asp-action="Create" class="btn btn-success">➕ Añadir Producto</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Disponible desde</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="align-middle">
+                <td>@item.Nombre</td>
+                <td>$@item.Precio</td>
+                <td>@item.FechaLanzamiento.ToShortDateString()</td>
+                <td>@item.Descripcion</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">✏️ Editar</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">👁️ Ver</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">🗑️ Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
