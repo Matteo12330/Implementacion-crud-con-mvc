@@ -17,9 +17,9 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    // Producción (Render): SQLite
+    // Producción (Render): PostgreSQL
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
 builder.Services.AddControllersWithViews();
