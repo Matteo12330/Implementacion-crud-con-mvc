@@ -19,7 +19,7 @@ namespace BiteSpot.Models
 
         [Display(Name = "Disponible desde")]
         [DataType(DataType.Date)]
-        public DateTime FechaLanzamiento { get; set; } // Fecha en que se lanza el producto
+        public DateTime FechaLanzamiento { get; set; } = DateTime.UtcNow; // Fecha en UTC obligatoria para PostgreSQL
 
         [StringLength(500)]
         public string? Descripcion { get; set; } // Descripción opcional del producto

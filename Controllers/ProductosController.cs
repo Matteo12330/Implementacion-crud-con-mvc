@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -42,23 +43,20 @@ namespace BiteSpot.Controllers
 
             if (producto == null) return NotFound();
 
-            // Aquí traemos todas las opiniones de ese producto incluyendo los datos del usuario
             var opiniones = await _context.Opiniones
                 .Where(o => o.ProductoId == id)
                 .Include(o => o.Usuario)
                 .ToListAsync();
 
-            // Si hay opiniones, calculamos el promedio de puntuación para mostrarlo en detalles
             if (opiniones.Any())
                 producto.PromedioCalificacion = Math.Round(opiniones.Average(o => o.Puntuacion), 1);
 
-            // Las opiniones se pasan por ViewBag para ser accesibles desde la vista
             ViewBag.Opiniones = opiniones;
 
             return View(producto);
         }
 
-        // Muestra el formulario para crear un nuevo producto (solo se selecciona la categoría)
+        // Muestra el formulario para crear un nuevo producto
         public IActionResult Create()
         {
             ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre");
@@ -72,9 +70,10 @@ namespace BiteSpot.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Aquí aseguramos que el producto se cree sin tendencia
-                // porque esta se asignará automáticamente luego en base a opiniones
                 producto.TendenciaId = null;
+
+                // Aseguramos que la fecha esté en UTC para PostgreSQL
+                producto.FechaLanzamiento = DateTime.UtcNow;
 
                 _context.Add(producto);
                 await _context.SaveChangesAsync();
@@ -108,8 +107,10 @@ namespace BiteSpot.Controllers
             {
                 try
                 {
-                    // Igual que en Create, limpiamos el campo TendenciaId para que sea actualizado automáticamente
                     producto.TendenciaId = null;
+
+                    // Convertimos a UTC antes de guardar
+                    producto.FechaLanzamiento = producto.FechaLanzamiento.ToUniversalTime();
 
                     _context.Update(producto);
                     await _context.SaveChangesAsync();
