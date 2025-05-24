@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BiteSpot.Helpers
 {
-    // Esta clase se encarga de actualizar la tendencia especial llamada "Favoritos de los usuarios"
+    // Aqui nos encargamos de actualizar la tendencia especial llamada "Favoritos de los usuarios"
     public static class TendenciaHelper
     {
-        // Se llama a este metodo cada vez que se crea una opinión nueva
+        // Se llama a este método cada vez que se crea o elimina una opinión
         public static void ActualizarTendenciaFavoritos(ApplicationDbContext context)
         {
             // Paso 1: Verificamos si ya existe una tendencia marcada como favorita
@@ -20,24 +20,19 @@ namespace BiteSpot.Helpers
                 {
                     Nombre = "Favoritos de los usuarios",
                     Descripcion = "Productos con mejor calificación promedio",
-                    FechaCreacion = DateTime.Now,
+                    FechaCreacion = DateTime.UtcNow,
                     EsFavorita = true,
-                    // Se le asigna alguna categoría válida para que no falle la relación
                     CategoriaId = context.Categorias.First().Id
                 };
 
-                // Guardamos la nueva tendencia en la base de datos
                 context.Tendencias.Add(tendenciaFavoritos);
                 context.SaveChanges();
             }
 
             // Paso 2: Fecha límite para considerar opiniones recientes (últimos 30 días)
-            var fechaLimite = DateTime.Now.AddDays(-30);
+            var fechaLimite = DateTime.UtcNow.AddDays(-30);
 
-            // Paso 3: Seleccionamos productos que cumplan con estas condiciones:
-            // - Tengan al menos 3 opiniones con puntuación mayor o igual a 4
-            // - Esas opiniones deben haber sido hechas dentro de los últimos 30 días
-            // - El promedio de esas opiniones recientes debe ser mayor o igual a 4.5
+            // Paso 3: Seleccionamos productos con al menos 3 opiniones recientes ≥ 4 y promedio ≥ 4.5
             var mejoresProductos = context.Productos
                 .Include(p => p.Opiniones)
                 .ToList()
@@ -46,22 +41,29 @@ namespace BiteSpot.Helpers
                     p.Opiniones.Where(o => o.Fecha >= fechaLimite).Average(o => o.Puntuacion) >= 4.5
                 ).ToList();
 
-            // Paso 4: Limpiamos todos los productos que estaban en la tendencia antes
+            // Paso 4: Limpiamos productos antiguos vinculados a la tendencia
             var productosExistentes = context.Productos.Where(p => p.TendenciaId == tendenciaFavoritos.Id).ToList();
             foreach (var p in productosExistentes)
             {
-                // Les quitamos la tendencia (esto evita que se acumulen productos viejos)
                 p.TendenciaId = null;
             }
 
-            // Paso 5: Asignamos los nuevos productos favoritos a la tendencia
+            // Paso 5: Asignar nuevos productos destacados
             foreach (var p in mejoresProductos)
             {
                 p.TendenciaId = tendenciaFavoritos.Id;
             }
 
-            // Finalmente guardamos los cambios en la base de datos
             context.SaveChanges();
+
+            // Paso 6: Si ya no hay productos vinculados, eliminar la tendencia
+            bool hayVinculados = context.Productos.Any(p => p.TendenciaId == tendenciaFavoritos.Id);
+
+            if (!hayVinculados)
+            {
+                context.Tendencias.Remove(tendenciaFavoritos);
+                context.SaveChanges();
+            }
         }
     }
 }
