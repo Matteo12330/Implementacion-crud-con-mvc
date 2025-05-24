@@ -20,7 +20,7 @@ namespace BiteSpot.Helpers
                 {
                     Nombre = "Favoritos de los usuarios",
                     Descripcion = "Productos con mejor calificación promedio",
-                    FechaCreacion = DateTime.UtcNow,
+                    FechaCreacion = DateTime.Now, // ✅ Compatibilidad con timestamp without time zone
                     EsFavorita = true,
                     CategoriaId = context.Categorias.First().Id
                 };
@@ -30,7 +30,7 @@ namespace BiteSpot.Helpers
             }
 
             // Paso 2: Fecha límite para considerar opiniones recientes (últimos 30 días)
-            var fechaLimite = DateTime.UtcNow.AddDays(-30);
+            var fechaLimite = DateTime.Now.AddDays(-30); // ✅ También compatible
 
             // Paso 3: Seleccionamos productos con al menos 3 opiniones recientes ≥ 4 y promedio ≥ 4.5
             var mejoresProductos = context.Productos
