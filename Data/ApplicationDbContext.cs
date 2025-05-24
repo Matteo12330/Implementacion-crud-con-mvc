@@ -20,17 +20,22 @@ namespace BiteSpot.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Evita error de múltiples rutas en cascada
+            // Evita error de múltiples rutas en cascada entre Tendencia y Categoría
             modelBuilder.Entity<Tendencia>()
                 .HasOne(t => t.Categoria)
                 .WithMany(c => c.Tendencias)
                 .HasForeignKey(t => t.CategoriaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configura el valor por defecto para EsFavorita
+            // Valor por defecto para indicar si una tendencia es "favorita"
             modelBuilder.Entity<Tendencia>()
                 .Property(t => t.EsFavorita)
                 .HasDefaultValue(false);
+
+            // Especificamos precisión del campo Precio (10 dígitos, 2 decimales)
+            modelBuilder.Entity<Producto>()
+                .Property(p => p.Precio)
+                .HasPrecision(10, 2);
         }
     }
 }
