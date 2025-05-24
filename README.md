@@ -6,25 +6,27 @@ El sistema permite a los usuarios registrados explorar productos destacados, dej
 
 ---
 
-## 🔄 Fase 1: CRUD básico (productos y tendencias)
+## 🔄 Fase 1: CRUD básico (productos y tendencias) - 31 de Marzo 2025
 
 - Creación, lectura, actualización y eliminación (CRUD) de productos y tendencias.
 - Implementado con Entity Framework y SQL Server LocalDB.
 - Interfaz inicial estructurada en Razor y Bootstrap.
+- Link Youtube: https://youtu.be/OI409buKkPw?si=9Z5LGMbDoOUtvIJs
 
 ---
 
-## 🔐 Fase 2: Login seguro y control de sesiones
+## 🔐 Fase 2: Login seguro y control de sesiones - 7 de abril 2025
 
 - Registro e inicio de sesión de usuarios.
 - Validación de contraseñas seguras (mínimo 8 caracteres, mayúscula, número).
 - Encriptación con MD5 para almacenar las contraseñas.
 - Almacenamiento de sesión y navegación protegida con `[LoginAuthorize]`.
 - Rediseño visual con enfoque realista orientado a marca (BiteSpot).
+- Link Youtube: https://youtu.be/K9hS8q5tFEA?si=33YZUF52_8Uo8vdk
 
 ---
 
-## 🚀 Fase 3: Validaciones Back-End, Dropdowns, SQLite y Deploy
+## 🚀 Fase 3: Validaciones Back-End, Dropdowns, SQLite y Deploy - 7 de mayo 2025
 
 Esta tercera fase introduce mejoras clave para preparar el proyecto a nivel de producción:
 
@@ -41,6 +43,7 @@ Esta tercera fase introduce mejoras clave para preparar el proyecto a nivel de p
   - `.dockerignore`
   - `README.md` documentado
 - Lógica automática para detectar entorno (`Program.cs`) y ajustar la conexión según corresponda.
+- Link Youtube: https://youtu.be/QMFov7ySAqg?si=F8LOVsRb--xRxOf8
 
 ---
 
