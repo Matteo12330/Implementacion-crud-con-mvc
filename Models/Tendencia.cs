@@ -18,7 +18,6 @@ namespace BiteSpot.Models
         [StringLength(300)]
         public string Descripcion { get; set; } = string.Empty;
 
-        [Column(TypeName = "datetime2")]
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
         [Display(Name = "Es Favorita")]

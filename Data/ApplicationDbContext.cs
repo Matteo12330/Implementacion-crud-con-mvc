@@ -32,6 +32,11 @@ namespace BiteSpot.Data
                 .Property(t => t.EsFavorita)
                 .HasDefaultValue(false);
 
+            // Especificar tipo compatible con PostgreSQL para FechaCreacion
+            modelBuilder.Entity<Tendencia>()
+                .Property(t => t.FechaCreacion)
+                .HasColumnType("timestamp");
+
             // Especificamos precisión del campo Precio (10 dígitos, 2 decimales)
             modelBuilder.Entity<Producto>()
                 .Property(p => p.Precio)
