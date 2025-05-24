@@ -9,6 +9,7 @@ using BiteSpot.Helpers;
 
 namespace BiteSpot.Controllers
 {
+    // Este controlador solo puede ser accedido por usuarios logueados gracias a este filtro personalizado
     [LoginAuthorize]
     public class ProductoController : Controller
     {
@@ -19,58 +20,72 @@ namespace BiteSpot.Controllers
             _context = context;
         }
 
+        // Muestra la lista de productos incluyendo su categoría y tendencia (si tuviera)
         public async Task<IActionResult> Index()
         {
             var productos = await _context.Productos
+                .Include(p => p.Categoria)
                 .Include(p => p.Tendencia)
-                .ThenInclude(t => t.Categoria)
                 .ToListAsync();
             return View(productos);
         }
 
+        // Muestra los detalles de un producto específico
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
             var producto = await _context.Productos
+                .Include(p => p.Categoria)
                 .Include(p => p.Tendencia)
-                .ThenInclude(t => t.Categoria)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (producto == null) return NotFound();
+
+            // Aquí traemos todas las opiniones de ese producto incluyendo los datos del usuario
+            var opiniones = await _context.Opiniones
+                .Where(o => o.ProductoId == id)
+                .Include(o => o.Usuario)
+                .ToListAsync();
+
+            // Si hay opiniones, calculamos el promedio de puntuación para mostrarlo en detalles
+            if (opiniones.Any())
+                producto.PromedioCalificacion = Math.Round(opiniones.Average(o => o.Puntuacion), 1);
+
+            // Las opiniones se pasan por ViewBag para ser accesibles desde la vista
+            ViewBag.Opiniones = opiniones;
 
             return View(producto);
         }
 
+        // Muestra el formulario para crear un nuevo producto (solo se selecciona la categoría)
         public IActionResult Create()
         {
             ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre");
-            ViewBag.Tendencias = new SelectList(_context.Tendencias, "Id", "Nombre");
             return View();
         }
 
+        // Recibe los datos del formulario para crear el producto
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Producto producto)
         {
             if (ModelState.IsValid)
             {
+                // Aquí aseguramos que el producto se cree sin tendencia
+                // porque esta se asignará automáticamente luego en base a opiniones
+                producto.TendenciaId = null;
+
                 _context.Add(producto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            int categoriaId = _context.Tendencias
-                .Where(t => t.Id == producto.TendenciaId)
-                .Select(t => t.CategoriaId)
-                .FirstOrDefault();
-
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", categoriaId);
-            ViewBag.Tendencias = new SelectList(_context.Tendencias.Where(t => t.CategoriaId == categoriaId), "Id", "Nombre", producto.TendenciaId);
-
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
+        // Carga los datos de un producto para ser editado
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -78,17 +93,11 @@ namespace BiteSpot.Controllers
             var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
 
-            int categoriaId = _context.Tendencias
-                .Where(t => t.Id == producto.TendenciaId)
-                .Select(t => t.CategoriaId)
-                .FirstOrDefault();
-
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", categoriaId);
-            ViewBag.Tendencias = new SelectList(_context.Tendencias.Where(t => t.CategoriaId == categoriaId), "Id", "Nombre", producto.TendenciaId);
-
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
+        // Guarda los cambios hechos al producto editado
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Producto producto)
@@ -99,43 +108,40 @@ namespace BiteSpot.Controllers
             {
                 try
                 {
+                    // Igual que en Create, limpiamos el campo TendenciaId para que sea actualizado automáticamente
+                    producto.TendenciaId = null;
+
                     _context.Update(producto);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Productos.Any(e => e.Id == producto.Id))
+                    if (!_context.Productos.Any(p => p.Id == producto.Id))
                         return NotFound();
-                    else
-                        throw;
+                    else throw;
                 }
             }
 
-            int categoriaId = _context.Tendencias
-                .Where(t => t.Id == producto.TendenciaId)
-                .Select(t => t.CategoriaId)
-                .FirstOrDefault();
-
-            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", categoriaId);
-            ViewBag.Tendencias = new SelectList(_context.Tendencias.Where(t => t.CategoriaId == categoriaId), "Id", "Nombre", producto.TendenciaId);
-
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
+        // Confirma la eliminación de un producto
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
             var producto = await _context.Productos
-                .Include(p => p.Tendencia)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (producto == null) return NotFound();
 
             return View(producto);
         }
 
+        // Elimina el producto definitivamente
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

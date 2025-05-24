@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BiteSpot.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250506155213_InitialSqlite")]
-    partial class InitialSqlite
+    [Migration("20250515025054_AddEsFavoritaToTendencia")]
+    partial class AddEsFavoritaToTendencia
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,39 @@ namespace BiteSpot.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("BiteSpot.Models.Opinion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comentario")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Puntuacion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Opiniones");
                 });
 
             modelBuilder.Entity("BiteSpot.Models.Producto", b =>
@@ -101,6 +134,11 @@ namespace BiteSpot.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<bool>("EsFavorita")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
@@ -143,6 +181,25 @@ namespace BiteSpot.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("BiteSpot.Models.Opinion", b =>
+                {
+                    b.HasOne("BiteSpot.Models.Producto", "Producto")
+                        .WithMany("Opiniones")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BiteSpot.Models.Usuario", "Usuario")
+                        .WithMany("Opiniones")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("BiteSpot.Models.Producto", b =>
                 {
                     b.HasOne("BiteSpot.Models.Categoria", "Categoria")
@@ -178,9 +235,19 @@ namespace BiteSpot.Migrations
                     b.Navigation("Tendencias");
                 });
 
+            modelBuilder.Entity("BiteSpot.Models.Producto", b =>
+                {
+                    b.Navigation("Opiniones");
+                });
+
             modelBuilder.Entity("BiteSpot.Models.Tendencia", b =>
                 {
                     b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("BiteSpot.Models.Usuario", b =>
+                {
+                    b.Navigation("Opiniones");
                 });
 #pragma warning restore 612, 618
         }

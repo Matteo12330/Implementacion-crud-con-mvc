@@ -18,8 +18,11 @@ namespace BiteSpot.Models
         [StringLength(300)]
         public string Descripcion { get; set; } = string.Empty;
 
-        [DataType(DataType.Date)]
+        [Column(TypeName = "datetime2")]
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
+
+        [Display(Name = "Es Favorita")]
+        public bool EsFavorita { get; set; } = false;
 
         public ICollection<Producto> Productos { get; set; } = new List<Producto>();
 

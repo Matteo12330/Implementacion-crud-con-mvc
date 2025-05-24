@@ -14,17 +14,23 @@ namespace BiteSpot.Data
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Tendencia> Tendencias { get; set; }
+        public DbSet<Opinion> Opiniones { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Evita error multiple cascade paths
+            // Evita error de múltiples rutas en cascada
             modelBuilder.Entity<Tendencia>()
                 .HasOne(t => t.Categoria)
                 .WithMany(c => c.Tendencias)
                 .HasForeignKey(t => t.CategoriaId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configura el valor por defecto para EsFavorita
+            modelBuilder.Entity<Tendencia>()
+                .Property(t => t.EsFavorita)
+                .HasDefaultValue(false);
         }
     }
 }

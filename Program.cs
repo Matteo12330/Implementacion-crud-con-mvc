@@ -8,19 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSession();
 
-// Configura la base de datos dependiendo del entorno
-if (builder.Environment.IsDevelopment())
-{
-    // Desarrollo local: SQL Server
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings_Local")["DefaultConnection"]));
-}
-else
-{
-    // Producción (Render): PostgreSQL
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
+// Siempre usar SQL Server mientras desarrollas
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings_Local")["DefaultConnection"]));
 
 builder.Services.AddControllersWithViews();
 

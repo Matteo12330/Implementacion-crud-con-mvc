@@ -1,27 +1,106 @@
 ﻿@model BiteSpot.Models.Producto
-
 @{
     ViewData["Title"] = "Detalles del Producto";
+    double? promedio = ViewBag.Promedio as double?;
+    var correo = Context.Session.GetString("UsuarioCorreo");
 }
 
-<h1>@ViewData["Title"]</h1>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
 
-<div>
-    <h4>Producto</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nombre)</dt>
-        <dd class="col-sm-9">@Html.DisplayFor(model => model.Nombre)</dd>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded">
+        <div class="row">
+            <div class="col-md-5">
+                <img src="~/img/productos/@(Model.Nombre?.Replace(" ", "").ToLower()).jpg"
+                     class="img-fluid rounded" alt="@Model.Nombre"
+                     style="object-fit: cover; max-height: 300px;" />
+            </div>
+            <div class="col-md-7">
+                <h2 style="font-family: 'Lobster', cursive; color: #801B1B;">@Model.Nombre</h2>
+                <hr />
+                <p><strong>💲 Precio:</strong> $@Model.Precio.ToString("0.00")</p>
+                <p><strong>📅 Disponible desde:</strong> @Model.FechaLanzamiento.ToShortDateString()</p>
+                <p><strong>📝 Descripción:</strong> @Model.Descripcion</p>
+                @if (promedio != null)
+                {
+                    <p><strong>⭐ Promedio:</strong> @promedio.Value.ToString("0.00") / 5</p>
+                }
+            </div>
+        </div>
 
-        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Precio)</dt>
-        <dd class="col-sm-9">@Html.DisplayFor(model => model.Precio)</dd>
+        <hr />
+        <h4 class="mt-4">🗣️ Opiniones</h4>
+        @if (ViewBag.Opiniones != null && ViewBag.Opiniones.Count > 0)
+        {
+            <div class="list-group">
+                @foreach (var op in ViewBag.Opiniones)
+                {
+                    <div class="list-group-item rounded shadow-sm mb-2">
+                        <strong>@op.Usuario?.Nombre:</strong> @op.Comentario <br />
+                        <small class="text-muted">⭐ @op.Puntuacion / 📅 @op.Fecha.ToShortDateString()</small>
+                        @if (correo == "admin@bitespot.com")
+                        {
+                            <form asp-controller="Opinion" asp-action="Delete" asp-route-id="@op.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger float-end">Eliminar</button>
+                            </form>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No hay opiniones aún para este producto.</p>
+        }
 
-        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FechaLanzamiento)</dt>
-        <dd class="col-sm-9">@Html.DisplayFor(model => model.FechaLanzamiento)</dd>
+        <div class="mt-4">
+            @if (correo != "admin@bitespot.com")
+            {
+                <a asp-controller="Opinion" asp-action="Create" asp-route-productoId="@Model.Id" class="btn btn-primary">Dejar una Opinión</a>
+            }
 
-        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Descripcion)</dt>
-        <dd class="col-sm-9">@Html.DisplayFor(model => model.Descripcion)</dd>
-    </dl>
+            @if (correo == "admin@bitespot.com")
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+            }
+
+            @if (correo == "admin@bitespot.com")
+            {
+                <a asp-action="Index" class="btn btn-secondary">Volver</a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="VistaUsuario" class="btn btn-secondary">Volver</a>
+            }
+        </div>
+    </div>
 </div>
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a> |
-<a asp-action="Index" class="btn btn-secondary">Volver</a>
+
+<style>
+    body {
+        background-color: #FFF8F0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .btn-primary {
+        background-color: #801B1B;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #a72e2e;
+        }
+
+    .btn-warning {
+        background-color: #ffbb33;
+        border: none;
+    }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+    .card {
+        background-color: #fffaf7;
+    }
+</style>

@@ -1,0 +1,94 @@
+﻿@model List<BiteSpot.Models.Producto>
+
+@{
+    ViewData["Title"] = "Explora los productos";
+
+    // Separamos los productos en dos listas: los que están en tendencia y los normales
+    var productosTendencia = ViewBag.ProductosTendencia as List<BiteSpot.Models.Producto> ?? new List<BiteSpot.Models.Producto>();
+    var productosNormales = Model.Except(productosTendencia).ToList();
+}
+
+<!-- Fuente personalizada para el título -->
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
+
+<div class="container mt-5">
+
+    @* Si existen productos en tendencia, los mostramos en una sección destacada *@
+    @if (productosTendencia.Any())
+    {
+        <h2 class="text-center mb-4" style="font-family: 'Lobster', cursive; color: #B22222;">🔥 Tendencias del momento</h2>
+        <div class="row mb-5">
+            @foreach (var producto in productosTendencia)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100 border-danger">
+                        <!-- Borde rojo para destacar -->
+                        <img src="~/img/productos/@(producto.Nombre?.Replace(" ", "").ToLower()).jpg"
+                             class="card-img-top" alt="@producto.Nombre" style="height: 200px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@producto.Nombre</h5>
+                            <p class="card-text text-muted">$@producto.Precio.ToString("0.00")</p>
+                            <a asp-controller="Producto" asp-action="Details" asp-route-id="@producto.Id" class="btn btn-danger">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Sección de todos los productos disponibles (exceptuando los que ya salieron en tendencias) *@
+    <h2 class="text-center mb-4" style="font-family: 'Lobster', cursive; color: #801B1B;">🍽️ Todos los productos</h2>
+
+    <div class="row">
+        @foreach (var producto in productosNormales)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100">
+                    <img src="~/img/productos/@(producto.Nombre?.Replace(" ", "").ToLower()).jpg"
+                         class="card-img-top" alt="@producto.Nombre" style="height: 200px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@producto.Nombre</h5>
+                        <p class="card-text text-muted">$@producto.Precio.ToString("0.00")</p>
+                        <a asp-controller="Producto" asp-action="Details" asp-route-id="@producto.Id" class="btn btn-primary">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Estilos personalizados para mejorar la estética -->
+<style>
+    body {
+        background-color: #FFF8F0; /* Fondo suave */
+        font-family: 'Lobster', cursive;
+    }
+
+    .card {
+        border-radius: 15px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: scale(1.03); /* Efecto al pasar el mouse */
+        }
+
+    .btn-primary {
+        background-color: #801B1B; /* Color corporativo */
+        border: none;
+        border-radius: 8px;
+    }
+
+        .btn-primary:hover {
+            background-color: #A72828;
+        }
+
+    .btn-danger {
+        border-radius: 8px;
+        font-weight: bold;
+    }
+</style>

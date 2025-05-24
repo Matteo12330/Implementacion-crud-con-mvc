@@ -1,6 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Inicio";
-    var nombre = Context.Session.GetString("UsuarioNombre") ?? "Usuario";
+    ViewData["Title"] = "Panel de Administrador";
+    var nombre = Context.Session.GetString("UsuarioNombre") ?? "Admin";
     var correo = Context.Session.GetString("UsuarioCorreo") ?? "";
 }
 
@@ -10,7 +10,7 @@
     <div class="text-center">
         <img src="~/img/bitespot-logo.png" alt="Logo" style="max-height: 80px;">
         <h2 class="mb-3" style="font-family: 'Lobster', cursive; color: #801B1B;">¡Hola, @nombre! 👋</h2>
-        <p class="lead">Bienvenido a tu panel BiteSpot. ¿Qué deseas hacer hoy?</p>
+        <p class="lead">Bienvenido a tu panel de administrador BiteSpot.</p>
     </div>
 
     <div class="row justify-content-center mt-4">
@@ -19,33 +19,28 @@
                 <div class="card-body">
                     <h5 class="card-title">🍔 Menú de Productos</h5>
                     <p class="card-text">Gestiona los productos de BiteSpot.</p>
-                    <a href="@Url.Action("Index", "Producto")" class="btn btn-bitespot">Ir a Producto</a>
+                    <a href="@Url.Action("Index", "Producto")" class="btn btn-bitespot">Ir a Productos</a>
                 </div>
             </div>
         </div>
-
-        @if (true) // mostrar siempre
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow text-center h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">📈 Tendencias</h5>
-                        <p class="card-text">Administra productos destacados y novedades.</p>
-                        <a href="@Url.Action("Index", "Tendencia")" class="btn btn-warning">Ir a Tendencias</a>
-                    </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🔥 Tendencias</h5>
+                    <p class="card-text">Administra productos destacados.</p>
+                    <a href="@Url.Action("Index", "Tendencia")" class="btn btn-warning">Ir a Tendencias</a>
                 </div>
             </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card shadow text-center h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">📂 Categorías</h5>
-                        <p class="card-text">Gestiona las categorías gastronómicas.</p>
-                        <a href="@Url.Action("Index", "Categoria")" class="btn btn-info">Ir a Categorías</a>
-                    </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">📂 Categorías</h5>
+                    <p class="card-text">Administra las categorías gastronómicas.</p>
+                    <a href="@Url.Action("Index", "Categoria")" class="btn btn-secondary">Ir a Categorías</a>
                 </div>
             </div>
-        }
+        </div>
     </div>
 </div>
 
