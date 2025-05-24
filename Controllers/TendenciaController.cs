@@ -48,22 +48,16 @@ namespace BiteSpot.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,FechaCreacion,CategoriaId")] Tendencia tendencia)
+        public async Task<IActionResult> Create([Bind("Nombre,Descripcion,CategoriaId")] Tendencia tendencia)
         {
             if (!ModelState.IsValid)
             {
-                // Log de errores para debugging
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Campo: {state.Key} - Error: {error.ErrorMessage}");
-                    }
-                }
-
                 ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", tendencia.CategoriaId);
                 return View(tendencia);
             }
+
+            // Asignar fecha de creación UTC
+            tendencia.FechaCreacion = DateTime.UtcNow;
 
             _context.Tendencias.Add(tendencia);
             await _context.SaveChangesAsync();
@@ -83,7 +77,7 @@ namespace BiteSpot.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,FechaCreacion,CategoriaId")] Tendencia tendencia)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,CategoriaId")] Tendencia tendencia)
         {
             if (id != tendencia.Id) return NotFound();
 
@@ -91,6 +85,13 @@ namespace BiteSpot.Controllers
             {
                 try
                 {
+                    // Preservamos la fecha de creación original
+                    var original = await _context.Tendencias.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
+                    if (original != null)
+                    {
+                        tendencia.FechaCreacion = original.FechaCreacion;
+                    }
+
                     _context.Update(tendencia);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -131,11 +132,6 @@ namespace BiteSpot.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TendenciaExists(int id)
-        {
-            return _context.Tendencias.Any(e => e.Id == id);
-        }
-
         [HttpGet]
         public JsonResult GetPorCategoria(int id)
         {
@@ -145,6 +141,11 @@ namespace BiteSpot.Controllers
                 .ToList();
 
             return Json(tendencias);
+        }
+
+        private bool TendenciaExists(int id)
+        {
+            return _context.Tendencias.Any(e => e.Id == id);
         }
     }
 }

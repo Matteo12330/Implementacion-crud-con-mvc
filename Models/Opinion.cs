@@ -17,20 +17,21 @@ namespace BiteSpot.Models
         [StringLength(500)]
         public string? Comentario { get; set; }
 
-        public DateTime Fecha { get; set; } = DateTime.Now; // Fecha en que se deja la opinión
+        // Cambie a UtcNow para compatibilidad con PostgreSQL (timestamp with time zone)
+        public DateTime Fecha { get; set; } = DateTime.UtcNow;
 
         [Required]
         public int ProductoId { get; set; } // Relación con el producto opinado
 
         [ForeignKey("ProductoId")]
         [ValidateNever]
-        public Producto Producto { get; set; } = null!; // Producto al que pertenece esta opinión
+        public Producto Producto { get; set; } = null!;
 
         [ValidateNever]
-        public int UsuarioId { get; set; } // Usuario que dejó la opinión
+        public int UsuarioId { get; set; }
 
         [ForeignKey("UsuarioId")]
         [ValidateNever]
-        public Usuario Usuario { get; set; } = null!; // Tenemos la relación con el usuario que opinó
+        public Usuario Usuario { get; set; } = null!;
     }
 }

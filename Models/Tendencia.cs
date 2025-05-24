@@ -18,7 +18,8 @@ namespace BiteSpot.Models
         [StringLength(300)]
         public string Descripcion { get; set; } = string.Empty;
 
-        public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        // Usamos UtcNow para compatibilidad con PostgreSQL
+        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "Es Favorita")]
         public bool EsFavorita { get; set; } = false;

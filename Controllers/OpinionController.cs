@@ -68,17 +68,14 @@ namespace BiteSpot.Controllers
                 return View(opinion);
             }
 
-            // Asignamos el ID del usuario y la fecha actual a la opinión
+            // ✅ Se usa UtcNow para evitar errores con PostgreSQL (timestamp with time zone)
             opinion.UsuarioId = usuarioId.Value;
-            opinion.Fecha = DateTime.Now;
+            opinion.Fecha = DateTime.UtcNow;
 
-            // Guardamos la nueva opinión en la base de datos
             _context.Opiniones.Add(opinion);
             _context.SaveChanges();
 
             // Aquí se llama al método que actualiza automáticamente las tendencias
-            // Este paso es clave porque si se cumplen las condiciones, el producto
-            // se asignará como "Favorito de los usuarios"
             TendenciaHelper.ActualizarTendenciaFavoritos(_context);
 
             // Enviamos un mensaje de agradecimiento y redirigimos al detalle del producto
@@ -92,19 +89,16 @@ namespace BiteSpot.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            // Buscamos la opinión con ese ID
             var opinion = _context.Opiniones.FirstOrDefault(o => o.Id == id);
             if (opinion == null)
                 return NotFound();
 
-            // Eliminamos la opinión
             _context.Opiniones.Remove(opinion);
             _context.SaveChanges();
 
             // Actualizamos las tendencias automáticamente por si ya no cumple los requisitos
             TendenciaHelper.ActualizarTendenciaFavoritos(_context);
 
-            // Volvemos a la vista del producto que tenía esa opinión
             return RedirectToAction("Details", "Producto", new { id = opinion.ProductoId });
         }
     }
