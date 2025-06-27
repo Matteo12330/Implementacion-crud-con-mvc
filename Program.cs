@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using BiteSpot.Data;
+using BiteSpot.Services; // 👈 Importante para usar el servicio
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddControllersWithViews();
+
+// ✅ Registro del servicio TendenciaService para aplicar DIP
+builder.Services.AddScoped<ITendenciaService, TendenciaService>();
 
 var app = builder.Build();
 
