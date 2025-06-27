@@ -1,62 +1,68 @@
+```markdown
 # BiteSpot – Aplicación Web Gastronómica (ASP.NET MVC - Proyecto UDLA)
 
-BiteSpot es una aplicación web desarrollada con **ASP.NET Core MVC**, que simula una plataforma gastronómica interactiva enfocada en la visualización, valoración y promoción de productos mediante la participación activa de los usuarios. A diferencia de una tienda en línea, BiteSpot **no gestiona ventas ni pagos**, sino que su objetivo es resaltar automáticamente los productos más populares a través de un flujo personalizado basado en **opiniones** y **calificaciones** de los usuarios.
+**BiteSpot** es una aplicación web desarrollada con **ASP.NET Core MVC**, que simula una plataforma gastronómica interactiva enfocada en la visualización, valoración y promoción de productos mediante la participación activa de los usuarios.
 
-El sistema permite a los usuarios registrados explorar productos destacados, dejar reseñas y contribuir a la generación automática de tendencias. A su vez, los administradores pueden gestionar productos, categorías y tendencias desde un panel de control.
+🎯 A diferencia de una tienda online, **BiteSpot no gestiona ventas ni pagos**. Su objetivo es **resaltar automáticamente los productos más populares** a través de un flujo personalizado basado en opiniones y calificaciones de los usuarios.
 
----
-
-## 🔄 Fase 1: CRUD básico (productos y tendencias) - 31 de Marzo 2025
-
-- Creación, lectura, actualización y eliminación (CRUD) de productos y tendencias.
-- Implementado con Entity Framework y SQL Server LocalDB.
-- Interfaz inicial estructurada en Razor y Bootstrap.
-- Link Youtube: https://youtu.be/OI409buKkPw?si=9Z5LGMbDoOUtvIJs
+Los usuarios registrados pueden explorar productos, dejar reseñas y contribuir a la generación automática de tendencias. Los administradores gestionan productos, categorías y tendencias desde un panel privado.
 
 ---
 
-## 🔐 Fase 2: Login seguro y control de sesiones - 7 de abril 2025
+## 🚧 Fases del Proyecto
 
+### 🔄 Fase 1: CRUD básico (31 de marzo 2025)
+- CRUD de productos y tendencias con Entity Framework y SQL Server.
+- Interfaz inicial estructurada con Razor y Bootstrap.
+- ✅ [Ver en YouTube](https://youtu.be/OI409buKkPw?si=9Z5LGMbDoOUtvIJs)
+
+### 🔐 Fase 2: Login seguro y control de sesiones (7 de abril 2025)
 - Registro e inicio de sesión de usuarios.
-- Validación de contraseñas seguras (mínimo 8 caracteres, mayúscula, número).
-- Encriptación con MD5 para almacenar las contraseñas.
-- Almacenamiento de sesión y navegación protegida con `[LoginAuthorize]`.
-- Rediseño visual con enfoque realista orientado a marca (BiteSpot).
-- Link Youtube: https://youtu.be/K9hS8q5tFEA?si=33YZUF52_8Uo8vdk
+- Validación de contraseñas seguras.
+- Encriptación MD5.
+- Protección de rutas con `[LoginAuthorize]`.
+- Rediseño visual orientado a marca.
+- ✅ [Ver en YouTube](https://youtu.be/K9hS8q5tFEA?si=33YZUF52_8Uo8vdk)
+
+### 🚀 Fase 3: Validaciones, dropdowns, SQLite y Docker (7 de mayo 2025)
+- Validaciones en back-end: campos obligatorios, email único, claves foráneas.
+- Dropdowns anidados (Categoría → Tendencia).
+- Soporte para dos entornos de base de datos:
+  - SQL Server (Desarrollo)
+  - SQLite (Producción inicial)
+- Dockerización completa del proyecto.
+- README.md técnico incluido.
+- ✅ [Ver en YouTube](https://youtu.be/QMFov7ySAqg?si=F8LOVsRb--xRxOf8)
+
+### 🌟 Fase 4: Core personalizado, mejoras y despliegue final (26 de mayo 2025)
+
+#### ✅ Avances finales
+- Sistema de opiniones con calificaciones (1 a 5 estrellas).
+- Cálculo automático del promedio por producto.
+- Si el promedio es ≥ 4.0 y no tiene tendencia asignada, el sistema le asigna automáticamente la tendencia **"Favoritos de los usuarios"**.
+- Se guarda la fecha de generación de la tendencia.
+- Control para evitar que se genere la misma tendencia más de una vez.
+- Vista de detalles muestra la fecha exacta en que se generó la tendencia.
+- Separación de vistas por rol (`Session["Rol"]`).
+- Restricción para que solo usuarios normales puedan dejar opiniones.
+- El administrador puede eliminar opiniones para moderación.
+- Migración a PostgreSQL como base de datos en producción.
+- Despliegue exitoso en Render con Railway.
+
+#### ✅ Sistema en producción
+🔗 https://bitespot.onrender.com
 
 ---
 
-## 🚀 Fase 3: Validaciones Back-End, Dropdowns, SQLite y Deploy - 7 de mayo 2025
+## 🧠 Lógica del Core Personalizado
 
-Esta tercera fase introduce mejoras clave para preparar el proyecto a nivel de producción:
-
-### ✅ Mejoras implementadas
-
-- **Validaciones en Back-End**: asegurando integridad de datos sensibles (campos obligatorios, claves foráneas, email único, etc.).
-- **Dropdowns dependientes**: se añadió relación Categoría → Tendencia en el formulario de creación de productos.
-- **Compatibilidad dual** de bases de datos:
-  - SQL Server en entorno local (desarrollo).
-  - SQLite en entorno productivo (Render).
-- **Dockerización del proyecto** para despliegue en Render.
-- Archivos añadidos:
-  - `Dockerfile`
-  - `.dockerignore`
-  - `README.md` documentado
-- Lógica automática para detectar entorno (`Program.cs`) y ajustar la conexión según corresponda.
-- Link Youtube: https://youtu.be/QMFov7ySAqg?si=F8LOVsRb--xRxOf8
-
----
-
-## 🧠 Lógica del Core Propuesto
-
-La lógica central de BiteSpot se basa en generar **tendencias automáticas** en función de las opiniones y calificaciones de los usuarios:
-
-- Cada opinión tiene una puntuación (de 1 a 5 estrellas).
-- El sistema evalúa el promedio de cada producto y la cantidad de opiniones.
-- Se genera un ranking dinámico de productos populares.
-- Los productos mejor valorados se destacan automáticamente en el Home.
-
-> Este flujo se alinea con el objetivo académico: demostrar un "core personalizado" que se genera automáticamente a partir de la interacción de al menos dos tablas relacionadas (Producto y Opinión).
+1. Los usuarios califican productos con 1 a 5 estrellas.
+2. El sistema recalcula el promedio tras cada nueva opinión.
+3. Si el promedio es ≥ 4.0 y el producto no tiene tendencia:
+   - Se asigna automáticamente **“Favoritos de los usuarios”**.
+   - Se guarda la fecha de asignación.
+4. En la vista de detalles se muestra la tendencia y la fecha.
+5. Este flujo cumple con el objetivo académico de generar una lógica personalizada basada en al menos dos entidades relacionadas (`Producto` y `Opinión`).
 
 ---
 
@@ -64,33 +70,73 @@ La lógica central de BiteSpot se basa en generar **tendencias automáticas** en
 
 - ASP.NET Core MVC 8
 - Entity Framework Core
-- SQL Server LocalDB (desarrollo)
-- SQLite (producción en Render)
-- Bootstrap 5
-- Sesiones con `HttpContext.Session`
-- Encriptación de contraseñas con MD5
+- SQL Server LocalDB (Desarrollo)
+- PostgreSQL (Producción vía Railway)
 - Docker + Render
+- Bootstrap 5
+- Razor Pages
+- Autenticación con sesiones (`HttpContext.Session`)
+- Validaciones en back-end
+- Encriptación de contraseñas (MD5)
 
 ---
 
 ## 📁 Estructura del Proyecto
 
-- **/Models**: Usuario, Producto, Tendencia, Categoria, Opinión
-- **/Controllers**: ProductosController, TendenciaController, CategoriaController, AccountController
-- **/Views**: CRUD + login/register
-- **/Helpers**: `SeguridadHelper.cs`, `LoginAuthorizeAttribute.cs`
-- **/Data**: `ApplicationDbContext.cs`
-- **/Migrations**: SQL Server y SQLite
-- **Raíz del proyecto**:
-  - `Dockerfile`
-  - `.dockerignore`
-  - `README.md`
+```
+
+/Models
+
+* Usuario.cs
+* Producto.cs
+* Tendencia.cs
+* Categoria.cs
+* Opinion.cs
+
+/Controllers
+
+* ProductosController.cs
+* TendenciaController.cs
+* CategoriaController.cs
+* OpinionController.cs
+* AccountController.cs
+
+/Views
+
+* Productos/
+* Opiniones/
+* Tendencias/
+* Account/
+* Shared/
+
+/Helpers
+
+* SeguridadHelper.cs
+* LoginAuthorizeAttribute.cs
+
+/Data
+
+* ApplicationDbContext.cs
+
+/Migrations
+
+* SQL Server y PostgreSQL
+
+Raíz del proyecto:
+
+* Dockerfile
+* .dockerignore
+* README.md
+* Program.cs
+* appsettings.json
+
+````
 
 ---
 
 ## ⚙️ Configuración de conexión por entorno
 
-En `Program.cs`:
+**En `Program.cs`:**
 
 ```csharp
 if (builder.Environment.IsDevelopment())
@@ -101,14 +147,29 @@ if (builder.Environment.IsDevelopment())
 else
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
+````
 
-Y en appsettings.json:
+**En `appsettings.json`:**
 
+```json
 "ConnectionStrings": {
-  "DefaultConnection": "Data Source=app.db"
+  "DefaultConnection": "Host=your_postgres_host;Port=5432;Database=bitespot;Username=postgres;Password=your_password"
 },
 "ConnectionStrings_Local": {
-  "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=ImplementacionCrudMVC;Trusted_Connection=True;"
+  "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=BiteSpot;Trusted_Connection=True;"
 }
+```
+
+---
+
+## ✅ Estado actual
+
+* [x] Core funcional implementado
+* [x] Opiniones conectadas y funcionando
+* [x] Generación automática de tendencias
+* [x] Despliegue en la nube con PostgreSQL
+* [x] Separación de vistas por rol
+* [x] Control de acceso y validaciones completas
+* [x] Docker y documentación técnica listos
