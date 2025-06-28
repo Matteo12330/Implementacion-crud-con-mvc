@@ -178,10 +178,6 @@ Program.cs
 
 appsettings.json
 
-yaml
-Copiar
-Editar
-
 ---
 
 ## ⚙️ Configuración de conexión por entorno
@@ -210,6 +206,9 @@ Editar
 "ConnectionStrings_Local": {
   "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=BiteSpot;Trusted_Connection=True;"
 }
+
+
+
 ✅ Estado actual
 ✔️ Core funcional implementado
 
