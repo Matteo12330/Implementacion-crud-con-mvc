@@ -9,6 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSession();
 
+// ✅ CORS - Permitir todos los orígenes (útil para desarrollo)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // ✅ Cadena de conexión: Railway o local
 var connectionString = Environment.GetEnvironmentVariable("RAILWAY_DB_URL")
                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
@@ -19,7 +30,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // ✅ MVC y API
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers(); // <-- Si quieres usar solo AddControllersWithViews también sirve, pero este es explícito
+builder.Services.AddControllers();
 
 // ✅ Servicio
 builder.Services.AddScoped<ITendenciaService, TendenciaService>();
@@ -37,14 +48,18 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
+
+// ✅ CORS aquí antes de Authorization
+app.UseCors("AllowAll");
+
 app.UseAuthorization();
 
-// ✅ Mapeo de rutas MVC
+// ✅ Rutas MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-// ✅ Mapeo de rutas API
-app.MapControllers(); // ⬅️ Esto faltaba
+// ✅ Rutas API
+app.MapControllers();
 
 app.Run();
