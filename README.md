@@ -1,4 +1,3 @@
-```markdown
 # BiteSpot – Aplicación Web Gastronómica (ASP.NET MVC - Proyecto UDLA)
 
 **BiteSpot** es una aplicación web desarrollada con **ASP.NET Core MVC**, que simula una plataforma gastronómica interactiva enfocada en la visualización, valoración y promoción de productos mediante la participación activa de los usuarios.
@@ -13,16 +12,16 @@ Los usuarios registrados pueden explorar productos, dejar reseñas y contribuir 
 
 ### 🔄 Fase 1: CRUD básico (31 de marzo 2025)
 - CRUD de productos y tendencias con Entity Framework y SQL Server.
-- Interfaz inicial estructurada con Razor y Bootstrap.
-- ✅ [Ver en YouTube](https://youtu.be/OI409buKkPw?si=9Z5LGMbDoOUtvIJs)
+- Interfaz inicial estructurada con Razor y Bootstrap.  
+✅ [Ver en YouTube](https://youtu.be/OI409buKkPw?si=9Z5LGMbDoOUtvIJs)
 
 ### 🔐 Fase 2: Login seguro y control de sesiones (7 de abril 2025)
 - Registro e inicio de sesión de usuarios.
 - Validación de contraseñas seguras.
 - Encriptación MD5.
 - Protección de rutas con `[LoginAuthorize]`.
-- Rediseño visual orientado a marca.
-- ✅ [Ver en YouTube](https://youtu.be/K9hS8q5tFEA?si=33YZUF52_8Uo8vdk)
+- Rediseño visual orientado a marca.  
+✅ [Ver en YouTube](https://youtu.be/K9hS8q5tFEA?si=33YZUF52_8Uo8vdk)
 
 ### 🚀 Fase 3: Validaciones, dropdowns, SQLite y Docker (7 de mayo 2025)
 - Validaciones en back-end: campos obligatorios, email único, claves foráneas.
@@ -31,8 +30,8 @@ Los usuarios registrados pueden explorar productos, dejar reseñas y contribuir 
   - SQL Server (Desarrollo)
   - SQLite (Producción inicial)
 - Dockerización completa del proyecto.
-- README.md técnico incluido.
-- ✅ [Ver en YouTube](https://youtu.be/QMFov7ySAqg?si=F8LOVsRb--xRxOf8)
+- README.md técnico incluido.  
+✅ [Ver en YouTube](https://youtu.be/QMFov7ySAqg?si=F8LOVsRb--xRxOf8)
 
 ### 🌟 Fase 4: Core personalizado, mejoras y despliegue final (26 de mayo 2025)
 
@@ -49,7 +48,7 @@ Los usuarios registrados pueden explorar productos, dejar reseñas y contribuir 
 - Migración a PostgreSQL como base de datos en producción.
 - Despliegue exitoso en Render con Railway.
 
-#### ✅ Sistema en producción
+#### ✅ Sistema en producción  
 🔗 https://bitespot.onrender.com
 
 ---
@@ -66,71 +65,118 @@ Los usuarios registrados pueden explorar productos, dejar reseñas y contribuir 
 
 ---
 
+## 🧠 Mejores Prácticas Aplicadas (SOLID + Patrones)
+
+Como parte de la fase final, se aplicaron **2 principios SOLID y 2 patrones de diseño** para mejorar la estructura y calidad del código:
+
+### ✅ Principios SOLID
+
+- **SRP (Responsabilidad Única)**  
+  Se creó la clase `TendenciaService.cs` para encapsular toda la lógica de generación de tendencias, separándola del controlador.
+
+- **DIP (Inversión de Dependencias)**  
+  El controlador `OpinionController.cs` depende de la interfaz `ITendenciaService`, que se inyecta desde `Program.cs`. Esto permite mayor flexibilidad, desacoplamiento y testeo.
+
+### 🧱 Patrones de Diseño
+
+- **Repository Pattern**  
+  `TendenciaService` actúa como repositorio, encapsulando el acceso a la base de datos y reglas de negocio relacionadas a tendencias y productos.
+
+- **Factory Pattern**  
+  `OpinionFactory.cs` permite crear instancias de opiniones con todos sus campos ya inicializados (`UsuarioId`, `Puntuacion`, `Fecha`), centralizando esa lógica y evitando duplicación.
+
+---
+
 ## 🛠 Tecnologías Utilizadas
 
-- ASP.NET Core MVC 8
-- Entity Framework Core
-- SQL Server LocalDB (Desarrollo)
-- PostgreSQL (Producción vía Railway)
-- Docker + Render
-- Bootstrap 5
-- Razor Pages
-- Autenticación con sesiones (`HttpContext.Session`)
-- Validaciones en back-end
+- ASP.NET Core MVC 8  
+- Entity Framework Core  
+- SQL Server LocalDB (Desarrollo)  
+- PostgreSQL (Producción vía Railway)  
+- Docker + Render  
+- Bootstrap 5  
+- Razor Pages  
+- Autenticación con sesiones (`HttpContext.Session`)  
+- Validaciones en back-end  
 - Encriptación de contraseñas (MD5)
 
 ---
 
 ## 📁 Estructura del Proyecto
 
-```
-
 /Models
 
-* Usuario.cs
-* Producto.cs
-* Tendencia.cs
-* Categoria.cs
-* Opinion.cs
+Usuario.cs
+
+Producto.cs
+
+Tendencia.cs
+
+Categoria.cs
+
+Opinion.cs
 
 /Controllers
 
-* ProductosController.cs
-* TendenciaController.cs
-* CategoriaController.cs
-* OpinionController.cs
-* AccountController.cs
+ProductosController.cs
+
+TendenciaController.cs
+
+CategoriaController.cs
+
+OpinionController.cs
+
+AccountController.cs
 
 /Views
 
-* Productos/
-* Opiniones/
-* Tendencias/
-* Account/
-* Shared/
+Productos/
+
+Opiniones/
+
+Tendencias/
+
+Account/
+
+Shared/
 
 /Helpers
 
-* SeguridadHelper.cs
-* LoginAuthorizeAttribute.cs
+SeguridadHelper.cs
+
+LoginAuthorizeAttribute.cs
+
+TendenciaHelper.cs
+
+/Services
+
+ITendenciaService.cs
+
+TendenciaService.cs
+
+/Factories
+
+OpinionFactory.cs
 
 /Data
 
-* ApplicationDbContext.cs
+ApplicationDbContext.cs
 
 /Migrations
 
-* SQL Server y PostgreSQL
+SQL Server y PostgreSQL
 
 Raíz del proyecto:
 
-* Dockerfile
-* .dockerignore
-* README.md
-* Program.cs
-* appsettings.json
+Dockerfile
 
-````
+.dockerignore
+
+README.md
+
+Program.cs
+
+appsettings.json
 
 ---
 
@@ -149,27 +195,31 @@ else
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
-````
+En appsettings.json:
 
-**En `appsettings.json`:**
-
-```json
+json
+Copiar
+Editar
 "ConnectionStrings": {
   "DefaultConnection": "Host=your_postgres_host;Port=5432;Database=bitespot;Username=postgres;Password=your_password"
 },
 "ConnectionStrings_Local": {
   "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=BiteSpot;Trusted_Connection=True;"
 }
-```
 
----
 
-## ✅ Estado actual
 
-* [x] Core funcional implementado
-* [x] Opiniones conectadas y funcionando
-* [x] Generación automática de tendencias
-* [x] Despliegue en la nube con PostgreSQL
-* [x] Separación de vistas por rol
-* [x] Control de acceso y validaciones completas
-* [x] Docker y documentación técnica listos
+✅ Estado actual
+✔️ Core funcional implementado
+
+✔️ Opiniones conectadas y funcionando
+
+✔️ Generación automática de tendencias
+
+✔️ Separación de vistas por rol
+
+✔️ Validaciones completas y control de acceso
+
+✔️ Docker y documentación técnica incluidos
+
+✔️ Proyecto desplegado en la nube con PostgreSQL
