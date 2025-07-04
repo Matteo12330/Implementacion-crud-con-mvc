@@ -3,28 +3,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using BiteSpot.Data;
-using BiteSpot.Services; // 👈 Importante para usar el servicio
+using BiteSpot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSession();
 
-// ✅ Obtener la cadena de conexión desde variable de entorno (producción) o archivo de configuración (desarrollo)
+// ✅ Cadena de conexión: Railway o local
 var connectionString = Environment.GetEnvironmentVariable("RAILWAY_DB_URL")
                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-// ✅ Configurar PostgreSQL como base de datos
+// ✅ PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// ✅ MVC y API
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers(); // <-- Si quieres usar solo AddControllersWithViews también sirve, pero este es explícito
 
-// ✅ Registro del servicio TendenciaService para aplicar DIP
+// ✅ Servicio
 builder.Services.AddScoped<ITendenciaService, TendenciaService>();
 
 var app = builder.Build();
 
-// Middleware estándar de ASP.NET Core
+// ✅ Middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -33,15 +35,16 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseSession();
-
 app.UseAuthorization();
 
+// ✅ Mapeo de rutas MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+
+// ✅ Mapeo de rutas API
+app.MapControllers(); // ⬅️ Esto faltaba
 
 app.Run();

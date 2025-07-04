@@ -11,33 +11,36 @@ namespace BiteSpot.Models
 
         [Required(ErrorMessage = "El nombre es obligatorio")]
         [StringLength(100)]
-        public string? Nombre { get; set; } // Nombre del producto
+        public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "El precio es obligatorio")]
         [Range(0.01, 10000, ErrorMessage = "El precio debe estar entre 0.01 y 10,000")]
-        public decimal Precio { get; set; } // Precio con validación de rango
+        public decimal Precio { get; set; }
 
         [Display(Name = "Disponible desde")]
         [DataType(DataType.Date)]
-        public DateTime FechaLanzamiento { get; set; } = DateTime.UtcNow; // Fecha en UTC obligatoria para PostgreSQL
+        public DateTime FechaLanzamiento { get; set; } = DateTime.UtcNow;
 
         [StringLength(500)]
-        public string? Descripcion { get; set; } // Descripción opcional del producto
+        public string? Descripcion { get; set; }
 
-        public int? TendenciaId { get; set; } // Tendencia generada automáticamente si el producto es popular
+        [StringLength(300)]
+        public string ImagenUrl { get; set; } = string.Empty; // ✅ Nueva propiedad agregada
+
+        public int? TendenciaId { get; set; }
 
         [ForeignKey("TendenciaId")]
-        public Tendencia? Tendencia { get; set; } // Relación con la tabla Tendencias (nullable)
+        public Tendencia? Tendencia { get; set; }
 
         [Required(ErrorMessage = "Debes seleccionar una categoría")]
-        public int CategoriaId { get; set; } // Categoría seleccionada al crear el producto
+        public int CategoriaId { get; set; }
 
         [ForeignKey("CategoriaId")]
-        public Categoria? Categoria { get; set; } // Relación con la tabla Categorías
+        public Categoria? Categoria { get; set; }
 
-        public ICollection<Opinion> Opiniones { get; set; } = new List<Opinion>(); // Opiniones dejadas por los usuarios
+        public ICollection<Opinion> Opiniones { get; set; } = new List<Opinion>();
 
         [NotMapped]
-        public double PromedioCalificacion { get; set; } // Se calcula al consultar, no se guarda en la base
+        public double PromedioCalificacion { get; set; } // Calculado dinámicamente
     }
 }
