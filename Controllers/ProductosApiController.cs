@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using BiteSpot.Data;
 using BiteSpot.Models;
+using System.Linq;
 
 namespace BiteSpot.Controllers
 {
@@ -20,19 +21,24 @@ namespace BiteSpot.Controllers
         [HttpGet("favoritos")]
         public async Task<ActionResult<IEnumerable<object>>> GetProductosFavoritos()
         {
-            var favoritos = await _context.Productos
-                .Include(p => p.Tendencia)
-                .Where(p => p.Tendencia != null && p.Tendencia.EsFavorita == true)
+            var productos = await _context.Productos
+                .Include(p => p.Opiniones)
+                .ToListAsync();
+
+            var favoritos = productos
+                .Where(p => p.Opiniones.Count(o => o.Puntuacion >= 4) >= 3)
                 .Select(p => new
                 {
                     p.Id,
                     p.Nombre,
                     p.Descripcion,
                     p.ImagenUrl,
-                    PromedioCalificacion = p.PromedioCalificacion,
-                    Tendencia = p.Tendencia.Nombre
+                    PromedioCalificacion = p.Opiniones.Any()
+                        ? Math.Round(p.Opiniones.Average(o => o.Puntuacion), 1)
+                        : 0,
+                    Tendencia = "Favoritos de los usuarios"
                 })
-                .ToListAsync();
+                .ToList();
 
             return Ok(favoritos);
         }
